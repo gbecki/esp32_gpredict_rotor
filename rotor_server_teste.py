@@ -9,6 +9,7 @@ PASSWORD="XXXXXXXXXXXX"
 port=4533
 wlan=None
 listenSocket=None
+s1el = Stepper.create(Pin(17,Pin.OUT),Pin(16,Pin.OUT),Pin(5,Pin.OUT),Pin(18,Pin.OUT), delay=2, mode='HALF_STEP')
 
 def connectWifi(ssid,passwd):
   global wlan
@@ -40,17 +41,16 @@ try:
         print("close socket")
         conn.close()
         break
-      print(data)
-      ret = conn.send(data)
-      #ret = conn.send("set_pos:")
+      matchObj = re.match( r'P', data)
+      if matchObj:
+        pos = data.split()
+        print(pos[1])
+        print(pos[2])
+        print("set_pos:", pos[1], pos[2])
+      #ret = conn.send(data)
+      ret = conn.send("set_pos:\nRPRT 0\n")
 except:
   if(listenSocket):
     listenSocket.close()
   wlan.disconnect()
   wlan.active(False)
-
-
-
-
-
-
